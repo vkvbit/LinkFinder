@@ -42,6 +42,7 @@ Short Form    | Long Form     | Description
 -r            | --regex       | RegEx for filtering purposes against found endpoints (e.g. ^/api/)
 -d            | --domain      | Toggle to use when analyzing an entire domain. Enumerates over all found JS files.
 -b            | --burp        | Toggle to use when inputting a Burp 'Save selected' file containing multiple JS files
+-H            | --header      | Add header for request. You can add multiple headers. e.g. -H "Authorization: Bearer <Token>" -H "X-Api-Key: key"
 -c            | --cookies     | Add cookies to the request
 -h            | --help        | show the help message and exit
 
@@ -66,6 +67,10 @@ Short Form    | Long Form     | Description
 * Enumerating an entire folder for JavaScript files, while looking for endpoints starting with /api/ and finally saving the results to results.html:
 
 `python linkfinder.py -i 'Desktop/*.js' -r ^/api/ -o results.html`
+
+* Using custom header like bearer token for authenticaton:
+
+`python linkfinder.py -i https://example.com/1.js -H "Authorization: Bearer <Token>"`
 
 ## Docker
 

@@ -116,7 +116,7 @@ def parser_input(input):
 be found (maybe you forgot to add http/https).")]
 
 
-def send_request(url):
+def send_request(url, custom_headers):
     '''
     Send requests with Requests
     '''
@@ -129,6 +129,9 @@ def send_request(url):
     q.add_header('Accept-Language', 'en-US,en;q=0.8')
     q.add_header('Accept-Encoding', 'gzip')
     q.add_header('Cookie', args.cookies)
+
+    for key, value in custom_headers.items():
+        q.add_header(key, value)
 
     try:
         sslcontext = ssl.create_default_context()
@@ -306,6 +309,9 @@ if __name__ == "__main__":
     parser.add_argument("-b", "--burp",
                         help="",
                         action="store_true")
+    parser.add_argument('-H', '--header',
+                        help='Add header for request. You can add multiple headers. \ne.g. -H "Authorization: Bearer <Token>" -H "X-Api-Key: key"'
+                        action='append')
     parser.add_argument("-c", "--cookies",
                         help="Add cookies for authenticated JS files",
                         action="store", default="")
@@ -325,12 +331,18 @@ if __name__ == "__main__":
     # Convert input to URLs or JS files
     urls = parser_input(args.input)
 
+    custom_headers = {}
+    if args.header:
+        for header in args.header:
+            key, value = header.split(':', 1)
+            custom_headers[key.strip()] = value.strip()
+
     # Convert URLs to JS
     output = ''
     for url in urls:
         if not args.burp:
             try:
-                file = send_request(url)
+                file = send_request(url, custom_headers)
             except Exception as e:
                 parser_error("invalid input defined or SSL error: %s" % e)
         else:
